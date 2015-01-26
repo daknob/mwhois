@@ -1,0 +1,56 @@
+#!/usr/bin/python
+
+# Use this file to get a wizard in order to enter a database
+# entry about an IP Address Block. It assumes the input is 
+# trusted and generates a more or less accurate whois record
+
+import netaddr
+
+ip = raw_input("Enter Network CIDR Block: ")
+body = ""
+n = "\r\n"
+ip = ip.replace("-", "/")
+ntwrk = netaddr.IPNetwork(ip)
+
+fullnet = ntwrk.network + " - " + ntwrk.broadcast
+abuse = raw_input("Enter Abuse E-Mail: ")
+body = body + "% Abuse contact for '" + fullnet + "' is '" + abuse + "'" + n + n
+body = body + "inetnum:        " + fullnet + n
+netname = raw_input("Net Name: ")
+body = body + "netname:        " + netname + n
+descr = raw_input("Description of network: ")
+body = body + "descr:          " + descr + n
+country = raw_input("Two-Digit Country Code: ")
+body = body + "country:        " + country + n
+admin = raw_input("Administrator: ")
+body = body + "admin-c:        " + admin + n
+print("Enter all Tech Admins, enter @ to stop.")
+f = raw_input("Tech Admin: ")
+while(f!="@"):
+	body = body + "tech-c:         " + f + n
+	f = raw_input("Tech Admin: ")
+status = raw_input("Status (ASSIGNED/ALLOCATED): ")
+body = body + "status:         " + status + n
+print("Enter all Managers, enter @ to stop.")
+mntby = raw_input("Managed by: ")
+while(mntby!="@"):
+	body = body + "mnt-by:         " + mntby + n
+	mntby = raw_input("Managed by: ")
+
+body = body + n
+nodeid = raw_input("WiND/Database Node ID: ")
+body = body + "% Information related to '" + ntwrk.network + "/" + ntwrk.prefixlen + "ID" + nodeid + "'" + n
+body = body + n
+body = body + "route:         " + ntwrk.network + "/" + ntwrk.prefixlen + n
+descr = raw_input("Short Network Description: ")
+body = body + "descr:         " + descr + n
+body = body + "origin:        " + nodeid + n
+body = body + "mnt-by:        " + admin + n
+
+
+# Save to file
+filename = ip.replace("/", "-")
+d = open("db/ipv4/" + filename, "w+")
+d.write(body)
+d.close()
+print("Done!")
