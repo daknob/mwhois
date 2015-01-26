@@ -1,0 +1,18 @@
+#!/usr/bin/python
+
+domain = raw_input("Enter Domain Name: ")
+body = ""
+print("You have now entered record editing mode. Enter a single @ line to save.")
+while True:
+	buff = raw_input("")
+	buff = buff.replace("\r\n", "\n")
+	buff = buff.replace("\n", "\r\n")
+	if(buff.replace("\r\n", "") == "@"):
+		break
+	body = body + buff + "\r\n"
+
+filename = domain
+d = open("db/domains/" + filename, "w+")
+d.write(body)
+d.close()
+print("Done!")

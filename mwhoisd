@@ -1,0 +1,137 @@
+#!/usr/bin/python
+
+
+import socket, os, re
+from time import strftime
+from netaddr import IPAddress, IPNetwork 
+
+LISTEN_ADDRESS	=	"0.0.0.0"
+LISTEN_PORT		=	43
+MAX_QUERY_SIZE	=	128
+LOGFILE			=	"/var/log/mwhois.log"
+n				=	"\r\n"
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+try:
+	s.bind((LISTEN_ADDRESS, LISTEN_PORT))
+except:
+	print("Could not bind specified IP or Port. Already in use?")
+	exit(2)
+s.listen(1)
+
+#	Sanitize the query received
+def sanitizeQuery(qr):
+	qr = qr.lower()
+	qr = qr.replace("..", ".")
+	qr = qr.replace("/", "")
+	qr = qr.replace("\\", "")
+	qr = qr.replace(n, "")
+	return qr
+
+# Check if the input is a valid IPv4 Address
+def isIP(qr):
+	bytez = qr.split(".")
+	if(len(bytez) != 4):
+		return False
+	for byt in bytez:
+		if(not byt.isdigit()):
+			return False
+	ipaddr = [int(bytez[0]), int(bytez[1]), int(bytez[2]), int(bytez[3])]
+	for num in ipaddr:
+		if(num < 0 or num > 255):
+			return False
+	return True
+
+# Check if the input is a valid domain name
+def isDomain(qr):
+	if(len(qr.split(".")) == 1):
+		return False
+	zones = qr.split(".")
+	ac = re.compile("^[a-z0-9\.-]+\n")
+	for zone in zones:
+		if(zone == ""):
+			return False
+		if(zone[0] == "-"):
+			return False
+		if(zone[-1] == "-"):
+			return False
+		if(ac.match(zone + "\n")):
+			pass
+		else:
+			return False
+	return True
+
+# Check if an IP belongs to a CIDR IP block
+def isIPinCIDR(ip, network):
+	return IPAddress(ip) in IPNetwork(network)
+
+while True:
+	con, adr = s.accept()
+	log = "[" + strftime("%d/%m/%Y %H:%M:%S") + "] " + adr[0] + " - "
+	while True:
+		query = con.recv(MAX_QUERY_SIZE)
+		if not query:
+			break
+		log = log + query.replace("\r\n", "").replace("\n", "") + " - "
+		query = sanitizeQuery(query)	
+
+		rsp = 		"# +-----------------------------------+" + n
+		rsp = rsp + "# |             DaKnObNET             |" + n
+		rsp = rsp + "# +-----------------------------------+" + n
+		rsp = rsp + "# |  This query was served by mwhois  |" + n
+		rsp = rsp + "# +-----------------------------------+" + n
+		rsp = rsp + n
+
+		if(isIP(query)):
+			# WHOIS IPv4
+			log = log + "IPv4"
+			ipdb = os.listdir("db/ipv4/")
+			for ipe in ipdb:
+				ipe = ipe.replace("-", "/")
+				found = False
+				if(isIPinCIDR(query, ipe)):
+					dd = open("db/ipv4/" + ipe.replace("/", "-"), "r")
+					rsp = rsp + dd.read()
+					dd.close()
+					found = True
+					log = log + n
+					break
+			if(found == False):
+				rsp = rsp + n
+				rsp = rsp + "# IP Address was not found in the whois database" + n
+				log = log + " (Not found)" + n
+
+		elif(isDomain(query)):
+			# WHOIS Domain
+			log = log + "Domain" + n
+			
+			domaindb = os.listdir("db/domains/")
+			for domain in domaindb:
+				found = False
+				if(query == domain):
+					dd = open("db/domains/" + domain, "r")
+					rsp = rsp + dd.read()
+					dd.close()
+					found = True
+					log = log + n
+					break
+			if(found == False):
+				rsp = rsp + n
+				rsp = rsp + "# Domain name was not found in the whois database" + n
+				log = log + " (Not found)" + n
+		else:
+			# Unrecognized	
+			log = log + "Unrecognized" + n
+			rsp = rsp + n
+			rsp = rsp + "# Error. Unknown query type. Query is not IPv4 or Domain " + n
+		con.send(rsp)
+		con.close()
+		if(LOGFILE!=""):
+			# Save to logs
+			try:
+				d = open(LOGFILE, "a+")
+				d.write(log)
+				d.close()
+			except:
+				print("FAILED TO SAVE TO LOGFILE!")
+		break

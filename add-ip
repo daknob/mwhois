@@ -1,0 +1,18 @@
+#!/usr/bin/python
+
+ip = raw_input("Enter Network CIDR Block: ")
+body = ""
+print("You have now entered record editing mode. Enter a single @ line to save.")
+while True:
+	buff = raw_input("")
+	buff = buff.replace("\r\n", "\n")
+	buff = buff.replace("\n", "\r\n")
+	if(buff.replace("\r\n", "") == "@"):
+		break
+	body = body + buff + "\r\n"
+
+filename = ip.replace("/", "-")
+d = open("db/ipv4/" + filename, "w+")
+d.write(body)
+d.close()
+print("Done!")
