@@ -9,13 +9,16 @@ LISTEN_ADDRESS	=	"0.0.0.0"
 LISTEN_PORT		=	43
 MAX_QUERY_SIZE	=	128
 LOGFILE			=	"/var/log/mwhois.log"
+
 n				=	"\r\n"
+os.system("mkdir -p db/ipv4")
+os.system("mkdir -p db/domains")
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 try:
 	s.bind((LISTEN_ADDRESS, LISTEN_PORT))
 except:
-	print("Could not bind specified IP or Port. Already in use?")
+	print("Could not bind specified IP or Port. Already in use? Not privileged for this port?")
 	exit(2)
 s.listen(1)
 
