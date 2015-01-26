@@ -12,7 +12,7 @@ n = "\r\n"
 ip = ip.replace("-", "/")
 ntwrk = netaddr.IPNetwork(ip)
 
-fullnet = ntwrk.network + " - " + ntwrk.broadcast
+fullnet = str(ntwrk.network) + " - " + str(ntwrk.broadcast)
 abuse = raw_input("Enter Abuse E-Mail: ")
 body = body + "% Abuse contact for '" + fullnet + "' is '" + abuse + "'" + n + n
 body = body + "inetnum:        " + fullnet + n
@@ -36,12 +36,13 @@ mntby = raw_input("Managed by: ")
 while(mntby!="@"):
 	body = body + "mnt-by:         " + mntby + n
 	mntby = raw_input("Managed by: ")
+body = body + "abuse-mailbox:  " + abuse + n
 
 body = body + n
 nodeid = raw_input("WiND/Database Node ID: ")
-body = body + "% Information related to '" + ntwrk.network + "/" + ntwrk.prefixlen + "ID" + nodeid + "'" + n
+body = body + "% Information related to '" + str(ntwrk.network) + "/" + str(ntwrk.prefixlen) + "ID" + nodeid + "'" + n
 body = body + n
-body = body + "route:         " + ntwrk.network + "/" + ntwrk.prefixlen + n
+body = body + "route:         " + str(ntwrk.network) + "/" + str(ntwrk.prefixlen) + n
 descr = raw_input("Short Network Description: ")
 body = body + "descr:         " + descr + n
 body = body + "origin:        " + nodeid + n
