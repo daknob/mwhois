@@ -1,4 +1,5 @@
 *.swp
 *.DS_Store
 *.pyc
-db/*
+db/ipv4/*
+db/domains/*
