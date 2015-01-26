@@ -19,6 +19,12 @@ is included in the respective folder.  The library  is included
 in order to ensure compatibility and is updated when deemed
 neccesary.
 
+Usage:
+In order to use the server, simply run the whois(1) command  in
+any operating system with the -h flag followed by your server's
+IP Address and then the  query.  An  example  asking  localhost
+about 10.0.0.0 is: whois -h 127.0.0.1 10.0.0.1.
+
 Configuration:
 In the file mwhoisd there are four (4)  configuration variables
 in the beggining, lines 8-11, conveniently named as  following: 
