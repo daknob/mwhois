@@ -49,7 +49,11 @@ this software:
 - LICENSE : The license of the software
 - DOC : This file, containing useful documentation
 - add-ip : A helpful script to add IP Ranges  in  the  database
+- add-ip-auto : A wizard for adding IP Blocks to  the  database
+- add-ip-wind : A wizard to add IP Blocks w/ "ID" instead of AS
 - add-domain : A script to add domain  names  in  the  database
+- hwhois : A bash script to use in order to  contact  a  custom
+           whois server such  as  whois.daknob.net  (127.0.0.1)
 - netaddr : An external python library required for the  server
 - db : A folder in which lies the internal database for lookups
 
