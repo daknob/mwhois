@@ -1,5 +1,5 @@
 mwhois
-Copyright (c) 2015 Antonios A. Chariton <daknob@tolabaki.gr>
+Copyright (c) 2015 Antonios A. Chariton <daknob.mac@gmail.com>
 
 Description: 
 mwhois is a server software compatible with the whois(1) command
