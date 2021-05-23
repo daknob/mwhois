@@ -2,10 +2,10 @@ mwhois
 Copyright (c) 2015 Antonios A. Chariton <daknob.mac@gmail.com>
 
 Description: 
-mwhois is a server software compatible with the whois(1) command
-on most linux and unix systems.  It is  fully compliant with the
+mwhois is server software compatible with the whois(1) command
+on most Linux and Unix systems.  It is  fully compliant with the
 RFC 3912. It can serve domain name and  IPv4  whois records when
-queried and uses a linux / unix filesystem structure for storing
+queried and uses a Linux / Unix filesystem structure for storing
 all the records. 
 
 Requirements:
@@ -17,7 +17,7 @@ The project is under the MIT License on its whole,  except from
 the "netaddr" python library that has a separate license, which
 is included in the respective folder.  The library  is included
 in order to ensure compatibility and is updated when deemed
-neccesary.
+necessary.
 
 Usage:
 In order to use the server, simply run the whois(1) command  in
@@ -58,7 +58,7 @@ this software:
 - db : A folder in which lies the internal database for lookups
 
 Storage Structure:
-The database that is served by mwhois is using the linux / unix
+The database that is served by mwhois is using the Linux / Unix
 filesystem in order to store content. There is a  folder  named
 "db" with two primary sub-folders, "ipv4" and "domains". In the
 first folder, all whois content for IPv4 Addresses is  located,
